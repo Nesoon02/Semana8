@@ -1,0 +1,65 @@
+<div class="catalogo-container">
+  <div class="header-actions">
+    <h2>Catálogo de productos</h2>
+    <div class="buttons">
+      <a routerLink="/productos/nuevo" class="btn btn-primary">
+        + Nuevo producto
+      </a>
+      <button type="button" (click)="cargarProductos()" class="btn btn-secondary">
+        Recargar
+      </button>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="alert alert-info">Cargando productos...</div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  }
+
+  @if (!cargando() && !error()) {
+    <div class="table-responsive">
+      <table class="tabla-productos">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of productos(); track p.id) {
+            <tr>
+              <td class="col-id">{{ p.id }}</td>
+              <td class="col-nombre">{{ p.nombre }}</td>
+              <td class="col-precio">S/ {{ p.precio }}</td>
+              <td class="col-stock">{{ p.stock }}</td>
+              <td>
+                <span class="badge" [class.badge-ok]="p.estadoStock === 'OK'" [class.badge-low]="p.estadoStock !== 'OK'">
+                  {{ p.estadoStock || (p.stock > 5 ? 'OK' : 'INSUFICIENTE') }}
+                </span>
+              </td>
+              <td class="col-acciones">
+                <a [routerLink]="['/productos/editar', p.id]" class="btn-action btn-edit">
+                  Editar
+                </a>
+                <button type="button" (click)="eliminar(p.id)" class="btn-action btn-delete">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-msg">No hay productos registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
